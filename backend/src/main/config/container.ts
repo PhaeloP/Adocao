@@ -1,5 +1,6 @@
-import { DivulgacaoRepositoryInMemory } from '../../infrastructure/repositories/DivulgacaoRepositoryInMemory';
-import { UserRepositoryInMemory } from '../../infrastructure/repositories/UserRepositoryInMemory';
+import { DivulgacaoRepositoryMySQL } from "../../infrastructure/repositories/DivulgacaoRepositoryMySQL";
+import { UserRepositoryMySQL } from "../../infrastructure/repositories/UserRepositoryMySQL";
+const userRepo = new UserRepositoryMySQL();
 
 import { ListDivulgacoes } from '../../application/usecases/ListDivulgacoes';
 import { CreateDivulgacao } from '../../application/usecases/CreateDivulgacao';
@@ -11,8 +12,8 @@ import { UsersController } from '../../presentation/controllers/UsersController'
 import { AuthController } from '../../presentation/controllers/AuthController';
 
 export function buildContainer() {
-  const divulgacaoRepo = new DivulgacaoRepositoryInMemory();
-  const userRepo = new UserRepositoryInMemory();
+  const divulgacaoRepo = new DivulgacaoRepositoryMySQL();
+  const userRepo = new UserRepositoryMySQL();
 
   const divulgacoesController = new DivulgacoesController(
     new ListDivulgacoes(divulgacaoRepo),
