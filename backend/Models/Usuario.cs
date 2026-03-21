@@ -8,6 +8,5 @@ namespace Adocao.Backend.Models
         public string Senha { get; set; } = string.Empty;
         public string Celular { get; set; } = string.Empty;
 
-        public List<Divulgacao> Divulgacoes { get; set; } = new();
     }
 }

@@ -10,8 +10,6 @@ namespace Adocao.Backend.Models
         public string Cidade { get; set; } = string.Empty;
         public string Sexo { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;
-
         public int UsuarioId { get; set; }
-        public Usuario? Usuario { get; set; }
     }
 }
