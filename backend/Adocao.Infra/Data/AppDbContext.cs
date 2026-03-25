@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Adocao.Backend.Models;
+using Adocao.Domain.Entities;
 
-namespace Adocao.Backend.Data
+namespace Adocao.Infra.Data
 {
     public class AppDbContext : DbContext
     {

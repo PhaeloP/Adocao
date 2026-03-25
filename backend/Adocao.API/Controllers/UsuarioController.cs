@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Adocao.Backend.Data;
-using Adocao.Backend.Models;
+using Adocao.Domain.Entities;
+using Adocao.Infra.Data;
+
 
 namespace Adocao.Backend.Controllers
 {

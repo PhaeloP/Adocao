@@ -1,5 +1,7 @@
+using Adocao.Infra.Data;
 using Microsoft.EntityFrameworkCore;
-using Adocao.Backend.Data;
+using Microsoft.AspNetCore.OpenApi;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

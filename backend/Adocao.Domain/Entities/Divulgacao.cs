@@ -1,4 +1,8 @@
-namespace Adocao.Backend.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Adocao.Domain.Entities
 {
     public class Divulgacao
     {
@@ -11,5 +15,6 @@ namespace Adocao.Backend.Models
         public string Sexo { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;
         public int UsuarioId { get; set; }
+
     }
 }

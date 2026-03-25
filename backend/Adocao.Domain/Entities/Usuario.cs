@@ -1,4 +1,8 @@
-namespace Adocao.Backend.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Adocao.Domain.Entities
 {
     public class Usuario
     {
