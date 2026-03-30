@@ -1,28 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
-using Adocao.Domain.Entities;
 using Adocao.Infra.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Adocao.Domain.Entities;
 
+namespace Adocao.API.Controllers;
 
-namespace Adocao.Backend.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class UsuarioController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsuarioController : ControllerBase
+    private readonly AppDbContext _context;
+
+    public UsuarioController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public UsuarioController(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        [HttpPost]
-        public IActionResult CriarUsuario([FromBody] Usuario usuario)
-        {
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-
-            return Ok(usuario);
-        }
+    [HttpGet]
+    public async Task<IActionResult> Listar()
+    {
+        var usuarios = await _context.Usuarios.ToListAsync();
+        return Ok(usuarios);
     }
 }

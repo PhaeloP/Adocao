@@ -6,6 +6,7 @@ namespace Adocao.Domain.Entities
 {
     public class Divulgacao
     {
+        public Usuario Usuario { get; set; } = null!;
         public int Id { get; set; }
         public string Animal { get; set; } = string.Empty;
         public int Idade { get; set; }

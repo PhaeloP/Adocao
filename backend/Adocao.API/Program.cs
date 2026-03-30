@@ -1,7 +1,5 @@
 using Adocao.Infra.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.OpenApi;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,18 +11,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    )
-);
+    ));
 
 var app = builder.Build();
 
-app.UseSwagger();
-
-app.UseSwaggerUI(c =>
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Adocao API V1");
-    c.RoutePrefix = "swagger";
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
