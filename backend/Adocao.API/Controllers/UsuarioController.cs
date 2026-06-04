@@ -16,10 +16,51 @@ public class UsuarioController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Listar(int id )
+    {
+        var usuario = await _context.Usuarios.FindAsync(id);
+        return Ok(usuario);
+    }
+
     [HttpGet]
     public async Task<IActionResult> Listar()
     {
         var usuarios = await _context.Usuarios.ToListAsync();
         return Ok(usuarios);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Deletar(int id)
+    {
+        var usuario = await _context.Usuarios.FindAsync(id);
+        _context.Usuarios.Remove(usuario);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Criar(string nome, string emails, string senha, string celular)
+    {
+        var usuario = new Usuario
+        {
+            Nome = nome,
+            Email = emails,
+            Senha = senha,
+            Celular = celular
+        };
+
+        try
+        {
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+            
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            return BadRequest();
+        }
+        
+        return Ok();
     }
 }
