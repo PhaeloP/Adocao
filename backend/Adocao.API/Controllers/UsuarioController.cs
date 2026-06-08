@@ -2,6 +2,7 @@ using Adocao.Infra.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Adocao.Domain.Entities;
+using Adocao.API.Dto.CriarUsuarioDto;
 
 namespace Adocao.API.Controllers;
 
@@ -40,14 +41,14 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Criar(string nome, string emails, string senha, string celular)
+    public async Task<IActionResult> Criar(CriarUsuarioDto criarUsuarioDto)
     {
         var usuario = new Usuario
         {
-            Nome = nome,
-            Email = emails,
-            Senha = senha,
-            Celular = celular
+            Nome = criarUsuarioDto.Nome,
+            Email = criarUsuarioDto.Email,
+            Senha = criarUsuarioDto.Senha,
+            Celular = criarUsuarioDto.Celular
         };
 
         try
