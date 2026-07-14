@@ -4,11 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Adocao.Domain.Entities;
 using Adocao.API.Dto;
 using Adocao.API.Services; // Adicionado para reconhecer o TokenService
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Adocao.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] 
     public class UsuarioController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -48,7 +51,7 @@ namespace Adocao.API.Controllers
 
             return Ok();
         }
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Criar(CriarUsuarioDto criarUsuarioDto)
         {
@@ -74,6 +77,7 @@ namespace Adocao.API.Controllers
         }
 
         // NOVA ROTA: Endpoint de Login para gerar o Token JWT
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
