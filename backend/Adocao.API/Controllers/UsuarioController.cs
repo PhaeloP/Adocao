@@ -11,7 +11,7 @@ namespace Adocao.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] 
+    //[Authorize] 
     public class UsuarioController : ControllerBase
     {
         private readonly AppDbContext _context;
