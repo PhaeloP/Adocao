@@ -1,14 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Adocao.API.Dto
 {
-    public class CriarDivulgacao
+    public class AtualizarDivulgacaoDto
     {
-        [Required(ErrorMessage = "O ID do usuário é obrigatório.")]
-        public int UsuarioId { get; set; }
-
-        [Column("nome_animal")]
         [StringLength(50, ErrorMessage = "O nome do animal não pode passar de 50 caracteres.")]
         public string? NomeAnimal { get; set; } 
         

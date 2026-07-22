@@ -40,7 +40,7 @@ namespace Adocao.API.Controllers
             return Ok(usuarios);
         }
 
-        [HttpDelete]
+       [HttpDelete("{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
@@ -75,7 +75,30 @@ namespace Adocao.API.Controllers
                 return BadRequest();
             }
         }
+                    [HttpPut("{id}")]
+            public async Task<IActionResult> Atualizar(int id, [FromBody] CriarUsuarioDto usuarioDto)
+            {
+                var usuario = await _context.Usuarios.FindAsync(id);
 
+                if (usuario == null)
+                    return NotFound();
+
+                usuario.Nome = usuarioDto.Nome;
+                usuario.Email = usuarioDto.Email;
+                usuario.Senha = usuarioDto.Senha;
+                usuario.Celular = usuarioDto.Celular;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(usuario);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    return BadRequest();
+    }
+}
         // NOVA ROTA: Endpoint de Login para gerar o Token JWT
         [AllowAnonymous]
         [HttpPost("login")]
