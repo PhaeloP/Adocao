@@ -15,12 +15,11 @@ builder.Services.AddSwaggerGen();
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", policy =>
+    options.AddPolicy("PermitirTudo", policy =>
     {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.AllowAnyOrigin()   // Permite requisições de qualquer lugar 
+              .AllowAnyMethod()   // Permite GET, POST, PUT, DELETE, etc.
+              .AllowAnyHeader();  // Permite qualquer cabeçalho (como o Token JWT)
     });
 });
 
@@ -72,5 +71,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors("PermitirTudo"); // <--- IMPORTANTE: Deve ficar antes de app.UseAuthorization() se ele existir
 app.Run();
