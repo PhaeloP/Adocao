@@ -5,6 +5,7 @@ using Adocao.Domain.Entities;
 using Adocao.API.Dto;
 using Adocao.API.Services; // Adicionado para reconhecer o TokenService
 using Microsoft.AspNetCore.Authorization;
+using BCrypt.Net;
 
 
 namespace Adocao.API.Controllers
@@ -52,29 +53,30 @@ namespace Adocao.API.Controllers
             return Ok();
         }
         [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> Criar(CriarUsuarioDto criarUsuarioDto)
-        {
-            var usuario = new Usuario
+       [HttpPost]
+            public async Task<IActionResult> Criar(CriarUsuarioDto criarUsuarioDto) 
             {
-                Nome = criarUsuarioDto.Nome,
-                Email = criarUsuarioDto.Email,
-                Senha = criarUsuarioDto.Senha,
-                Celular = criarUsuarioDto.Celular
-            };
+                try
+                {
+                    var usuario = new Usuario()
+                    {
+                        Nome = criarUsuarioDto.Nome,
+                        Email = criarUsuarioDto.Email,
+                        Senha = BCrypt.Net.BCrypt.HashPassword(criarUsuarioDto.Senha), 
+                        Celular = criarUsuarioDto.Celular
+                    };
 
-            try
-            {
-                _context.Usuarios.Add(usuario);
-                await _context.SaveChangesAsync();
-                return Ok();
+                    _context.Usuarios.Add(usuario);
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    return BadRequest(new { mensagem = "Erro interno ao salvar no banco." });
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return BadRequest();
-            }
-        }
+
                     [HttpPut("{id}")]
             public async Task<IActionResult> Atualizar(int id, [FromBody] CriarUsuarioDto usuarioDto)
             {
@@ -105,14 +107,16 @@ namespace Adocao.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             // Busca o usuário no banco pelo e-mail e pela senha
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Senha == loginDto.Senha);
+            // 1. Busca o usuário apenas pelo e-mail primeiro
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-            // Se não encontrar ou os dados estiverem errados, barra o acesso
-            if (usuario == null)
+            // 2. Compara a senha digitada limpa com o Hash criptografado do banco de dados
+            if (usuario == null || !BCrypt.Net.BCrypt.Verify(loginDto.Senha, usuario.Senha))
             {
                 return Unauthorized(new { mensagem = "E-mail ou senha inválidos." });
             }
+
+            // 3. Se deu certo, o código continua gerando o token JWT abaixo...
 
             // Se der certo, gera o token dinamicamente usando o ID e o E-mail dele
             var token = _tokenService.GerarToken(usuario.Email, usuario.Id.ToString());
