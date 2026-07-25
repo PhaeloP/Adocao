@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import axios from 'axios'
 import CadastroUsuario from './components/CadastroUsuario' // <--- Importação aqui
+import ListaDivulgacao from './components/ListaDivulgacao' // <--- Importe no topo
+
+// ... dentro do return do App(), coloque no final:
 
 function App() {
   const [usuarios, setUsuarios] = useState([])
@@ -39,6 +42,8 @@ function App() {
 
       <div style={{ marginTop: '30px' }}>
         <h3>Lista de Usuários no Banco:</h3>
+        <hr style={{ margin: '30px 0', border: '0', borderTop: '1px solid #ccc' }} />
+<ListaDivulgacao />
         {usuarios.length === 0 ? (
           <p style={{ color: '#666' }}>Nenhum usuário carregado ainda.</p>
         ) : (
@@ -47,6 +52,7 @@ function App() {
               <li key={usuario.id} style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #ccc' }}>
                 <strong>ID:</strong> {usuario.id} | <strong>Nome:</strong> {usuario.nome} | <strong>E-mail:</strong> {usuario.email}
               </li>
+              
             ))}
           </ul>
         )}
