@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Adocao.API.Services;
 
+// TODO: Limpar comentarios desnecessarios.
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -15,7 +17,7 @@ builder.Services.AddSwaggerGen();
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirTudo", policy =>
+    options.AddPolicy("PermitirTudo", policy =>  // TODO: mudar nome da policy "permitirTudo" para um nome menos feio.
     {
         policy.AllowAnyOrigin()   // Permite requisições de qualquer lugar 
               .AllowAnyMethod()   // Permite GET, POST, PUT, DELETE, etc.

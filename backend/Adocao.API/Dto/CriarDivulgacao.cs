@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Adocao.API.Dto
 {
+    // TODO: tirar campos nullables
     public class CriarDivulgacao
     {
         [Required(ErrorMessage = "O ID do usuário é obrigatório.")]

@@ -5,6 +5,8 @@ using Adocao.API.Dto;
 
 namespace Adocao.Controllers
 {
+    // TODO: tirar comentarios desnecessarios.
+
     [ApiController]
     [Route("api/[controller]")]
     public class DivulgacaoController : ControllerBase
@@ -22,7 +24,7 @@ namespace Adocao.Controllers
             {
                 UsuarioId = Criardivulgacao.UsuarioId,
                 NomeAnimal = Criardivulgacao.NomeAnimal, // <--- Casamento perfeito!
-                Idade = Criardivulgacao.Idade.Value,
+                Idade = Criardivulgacao.Idade.Value, // TODO: Tirar .Value
                 Porte = Criardivulgacao.Porte,
                 Sexo = Criardivulgacao.Sexo,
                 Cidade = Criardivulgacao.Cidade,

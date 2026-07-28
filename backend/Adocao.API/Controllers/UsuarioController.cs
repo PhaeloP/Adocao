@@ -10,6 +10,8 @@ using BCrypt.Net;
 
 namespace Adocao.API.Controllers
 {
+    // TODO: limpar comentarios desnessarios.
+    // TODO: ajustar espaçamento das linhas.
     [ApiController]
     [Route("api/[controller]")]
     //[Authorize] 
