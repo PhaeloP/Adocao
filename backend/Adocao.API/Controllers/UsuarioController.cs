@@ -80,7 +80,7 @@ namespace Adocao.API.Controllers
             }
 
                     [HttpPut("{id}")]
-            public async Task<IActionResult> Atualizar(int id, [FromBody] CriarUsuarioDto usuarioDto)
+            public async Task<IActionResult> Atualizar(int id, [FromBody] CriarUsuarioDto usuarioDto) //TODO: Atualizar nao deve usar o DTO de criar usuario. crie um novo DTO.
             {
                 var usuario = await _context.Usuarios.FindAsync(id);
 
