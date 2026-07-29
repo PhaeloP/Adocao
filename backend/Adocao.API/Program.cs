@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Adocao.API.Services;
 
-// TODO: Limpar comentarios desnecessarios.
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +17,11 @@ builder.Services.AddSwaggerGen();
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirTudo", policy =>  // TODO: mudar nome da policy "permitirTudo" para um nome menos feio.
+    options.AddPolicy("Permissao", policy => 
     {
-        policy.AllowAnyOrigin()   // Permite requisições de qualquer lugar 
-              .AllowAnyMethod()   // Permite GET, POST, PUT, DELETE, etc.
-              .AllowAnyHeader();  // Permite qualquer cabeçalho (como o Token JWT)
+        policy.AllowAnyOrigin()   
+              .AllowAnyMethod()   
+              .AllowAnyHeader();  
     });
 });
 
@@ -31,7 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
 
-// CONFIGURAÇÃO DO JWT
+
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"]??"");
 
 builder.Services.AddAuthentication(x =>
@@ -65,13 +65,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// CORS deve vir antes de Authorization e MapControllers
+
 app.UseCors("Frontend");
 
-// ATIVAÇÃO DO JWT (Obrigatório vir antes do Authorization)
+
 app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("PermitirTudo"); // <--- IMPORTANTE: Deve ficar antes de app.UseAuthorization() se ele existir
+app.UseCors("PermitirTudo");
 app.Run();
