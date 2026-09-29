@@ -4,6 +4,7 @@ import axios from 'axios'
 function CadastroUsuario() {
   const [formData, setFormData] = useState({
     nome: '',
+    sobrenome: '', // 1. Adicionado o sobrenome no estado inicial
     email: '',
     senha: '',
     celular: ''
@@ -21,16 +22,14 @@ function CadastroUsuario() {
     setSucesso(false)
 
     try {
-      // Ajuste a URL/porta se necessário
       await axios.post('http://localhost:5184/api/Usuario', formData)
       
       setSucesso(true)
-      setMensagem('Usuário cadastrado com sucesso! Clique no botão de listar para ver.')
-      setFormData({ nome: '', email: '', senha: '', celular: '' }) // Limpa o formulário
+      setMensagem('Usuário cadastrado com sucesso! Use os dados acima para logar.')
+      setFormData({ nome: '', sobrenome: '', email: '', senha: '', celular: '' }) // Limpa tudo
     } catch (err) {
       console.error(err)
       if (err.response && err.response.data && err.response.data.errors) {
-        // Pega os erros de validação que o backend mandou
         const errosBackend = Object.values(err.response.data.errors).join(' ')
         setMensagem(errosBackend)
       } else {
@@ -43,11 +42,17 @@ function CadastroUsuario() {
     <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #ddd' }}>
       <h2>Cadastrar Novo Usuário</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input type="text" name="nome" placeholder="Nome Completo" value={formData.nome} onChange={handleChange} required style={{ padding: '8px' }} />
-        <input type="email" name="email" placeholder="E-mail" value={formData.email} onChange={handleChange} required style={{ padding: '8px' }} />
-        <input type="password" name="senha" placeholder="Senha (mínimo 6 caracteres)" value={formData.senha} onChange={handleChange} required style={{ padding: '8px' }} />
-        <input type="text" name="celular" placeholder="Celular (11 dígitos numéricos)" value={formData.celular} onChange={handleChange} required style={{ padding: '8px' }} />
+        <input type="text" name="nome" placeholder="Nome" value={formData.nome} onChange={handleChange} required style={{ padding: '8px' }} />
         
+        {/* 2. Corrigido o value para puxar do estado correto do sobrenome */}
+        <input type="text" name="sobrenome" placeholder="Sobrenome" value={formData.sobrenome} onChange={handleChange} required style={{ padding: '8px' }} />
+        
+        <input type="email" name="email" placeholder="E-mail" value={formData.email} onChange={handleChange} required style={{ padding: '8px' }} />
+        
+        {/* 3. Devolvidos os campos obrigatórios que tinham sumido */}
+        <input type="password" name="senha" placeholder="Senha" value={formData.senha} onChange={handleChange} required style={{ padding: '8px' }} />
+        <input type="text" name="celular" placeholder="Celular" value={formData.celular} onChange={handleChange} required style={{ padding: '8px' }} />
+
         <button type="submit" style={{ padding: '10px', background: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}>
           Salvar no Banco
         </button>
