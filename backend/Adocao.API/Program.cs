@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Adocao.API.Services;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -14,14 +12,14 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS
+// 1. Criando a política com o nome correto
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Permissao", policy => 
+    options.AddPolicy("AllowReact", policy =>
     {
-        policy.AllowAnyOrigin()   
-              .AllowAnyMethod()   
-              .AllowAnyHeader();  
+        policy.WithOrigins("http://localhost:5173","http://127.0.0.1:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
@@ -31,8 +29,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
 
-
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"]??"");
+var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"] ?? "");
 
 builder.Services.AddAuthentication(x =>
 {
@@ -65,13 +62,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
-app.UseCors("Frontend");
-
+// 2. ATIVANDO a política correta ANTES da autenticação e das rotas
+app.UseCors("AllowReact");
 
 app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("PermitirTudo");
+
 app.Run();

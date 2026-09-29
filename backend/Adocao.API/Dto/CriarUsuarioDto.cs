@@ -15,9 +15,11 @@ public string Email { get; set; } = string.Empty;
 [Required(ErrorMessage = "A senha é obrigatória.")]
 [StringLength(20, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 20 caracteres.")]
 public string Senha { get; set; } = string.Empty;
+
 [Required(ErrorMessage = "O celular é obrigatório.")]
-[RegularExpression(@"^\d{11}\$", ErrorMessage = "O celular deve conter exatamente 11 dígitos numéricos (DDD + número).")]
+[RegularExpression(@"^\d{11}$", ErrorMessage = "O celular deve conter exatamente 11 dígitos numéricos (DDD + número).")]
 public string Celular { get; set; } = string.Empty;
+
 }
 
 }
