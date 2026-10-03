@@ -54,11 +54,9 @@ builder.Services.AddAuthentication(x =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Liberado o Swagger para funcionar também na nuvem (Render)
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
