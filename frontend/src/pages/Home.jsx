@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../services/api'
 
 function ListaDivulgacao() {
   const [animais, setAnimais] = useState([])
@@ -8,7 +8,7 @@ function ListaDivulgacao() {
   const buscarAnimais = async () => {
     try {
       setErro(null)
-      const resposta = await axios.get('http://localhost:5184/api/Divulgacao')
+      const resposta = await api.get('/Divulgacao')
       setAnimais(resposta.data) // <--- Se seu backend retornar uma lista de divulgações
     } catch (err) {
       console.error(err)
