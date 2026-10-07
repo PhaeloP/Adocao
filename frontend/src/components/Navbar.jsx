@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PawPrint, LogIn, UserPlus, LogOut, Menu, X } from 'lucide-react';
-import logoPet from '../assets/logo-pet.svg'; // <- Precisaremos deste ficheiro de logótipo
 
 function Navbar() {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -16,9 +15,9 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
-          {/* Logo */}
+          {/* Logo com ícone PawPrint */}
           <Link to="/" className="flex items-center gap-2" onClick={fecharMenu}>
-            <img src={logoPet} alt="Amigo Pet" className="h-10 w-auto" />
+            <PawPrint className="w-8 h-8 text-orange-600" />
             <span className="text-xl font-bold text-gray-800">Amigo<span className="text-orange-600">Pet</span></span>
           </Link>
 
