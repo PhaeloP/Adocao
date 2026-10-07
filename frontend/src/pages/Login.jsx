@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, PawPrint } from 'lucide-react';
 import api from '../services/api';
 
-function Login() {
+export default function Login() {
+  //  AQUI ENTROU O USEEFFECT (logo no início da função, antes dos estados)
+  useEffect(() => {
+    document.title = "Lar Para Focinhos | Login";
+  }, []);
+
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState(null);
@@ -17,7 +22,6 @@ function Login() {
     setCarregando(true);
 
     try {
-      // Faz o login usando a nossa API centralizada
       const response = await api.post('/Usuario/login', {
         email: email,
         senha: senha
@@ -26,7 +30,6 @@ function Login() {
       console.log('Login feito com sucesso:', response.data);
       alert('Login realizado com sucesso!');
       
-      // Redireciona o usuário para a Home (Feed)
       navigate('/');
     } catch (err) {
       console.error('Erro no login:', err);
@@ -48,7 +51,7 @@ function Login() {
           <div style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
             <PawPrint size={32} color="#ea580c" />
             <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>
-              Amigo<span style={{ color: '#ea580c' }}>Pet</span>
+              Lar Para <span style={{ color: '#ea580c' }}>Focinhos</span>
             </span>
           </div>
 
@@ -155,5 +158,3 @@ function Login() {
     </div>
   );
 }
-
-export default Login;

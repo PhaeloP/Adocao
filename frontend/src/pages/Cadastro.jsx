@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Phone, UserPlus, PawPrint } from 'lucide-react';
 import api from '../services/api';
 
-function Cadastro() {
+  function Cadastro() {
+  // 👇 Coloque AQUI (dentro da função, no topo)
+  useEffect(() => {
+    document.title = "Lar Para Focinhos | Cadastrar-se";
+  }, []);
+
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
@@ -11,6 +16,8 @@ function Cadastro() {
     senha: '',
     celular: ''
   });
+
+  // ... resto do seu código continua aqui
 
   const [mensagem, setMensagem] = useState(null);
   const [sucesso, setSucesso] = useState(false);
