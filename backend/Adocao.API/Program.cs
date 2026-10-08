@@ -12,14 +12,18 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 1. Criando a política com o nome correto
+// 1. Configurando o CORS com o domínio do Cloudflare Pages
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReact", policy =>
     {
-        policy.WithOrigins("http://localhost:5173","http://127.0.0.1:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "https://larparafocinhos.pages.dev"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
@@ -58,10 +62,10 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-
-// 2. ATIVANDO a política correta ANTES da autenticação e das rotas
+// 2. ATIVANDO o CORS no início dos middlewares
 app.UseCors("AllowReact");
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication(); 
 app.UseAuthorization();
