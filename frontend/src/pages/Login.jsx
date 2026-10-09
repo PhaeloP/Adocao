@@ -22,18 +22,21 @@ export default function Login() {
     setCarregando(true);
 
     try {
-      const response = await api.post('/Usuario/login', {
-        email: email,
-        senha: senha
-      });
+      const response = await api.post('/Usuario/login', { email, senha });
 
-      console.log('Login feito com sucesso:', response.data);
-      alert('Login realizado com sucesso!');
-      
-      navigate('/');
+      // 1. Salva o token no localStorage
+      localStorage.setItem('token', response.data.token);
+
+      // 2. Salva o usuário (se a sua API retornar o objeto usuario junto)
+      if (response.data.usuario) {
+        localStorage.setItem('usuario', JSON.stringify(response.data.usuario));
+      }
+
+      // 3. Redireciona para o Feed
+      navigate('/home'); 
     } catch (err) {
-      console.error('Erro no login:', err);
-      setErro('E-mail ou senha inválidos.');
+      console.error(err);
+      setErro(err.response?.data?.mensagem || 'E-mail ou senha incorretos.');
     } finally {
       setCarregando(false);
     }

@@ -1,126 +1,196 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, PawPrint, Heart, MapPin, RefreshCw } from 'lucide-react';
+import api from '../services/api';
 
 export default function Home() {
   const [pets, setPets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSpecies, setSelectedSpecies] = useState('Todos');
-  const [selectedSize, setSelectedSize] = useState('Todos');
+  const [carregando, setCarregando] = useState(true);
+  const [busca, setBusca] = useState('');
+  const [especie, setEspecie] = useState('Todos');
+  const [porte, setPorte] = useState('Todos');
 
   useEffect(() => {
     document.title = "Lar Para Focinhos | Início";
-
-    // Futura integração com o backend C#:
-    // fetch('https://sua-api.com/api/pets')
-    //   .then(res => res.json())
-    //   .then(data => setPets(data))
-    //   .finally(() => setLoading(false));
-
-    setLoading(false);
+    carregarPets();
   }, []);
 
-  // Filtragem em cima dos dados reais da API
-  const filteredPets = pets.filter(pet => {
-    const matchesSearch = (pet.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (pet.breed || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (pet.location || '').toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesSpecies = selectedSpecies === 'Todos' || pet.species === selectedSpecies;
-    const matchesSize = selectedSize === 'Todos' || pet.size === selectedSize;
+  const carregarPets = async () => {
+    setCarregando(true);
+    try {
+      const response = await api.get('/Pet');
+      setPets(response.data || []);
+    } catch (erro) {
+      console.error('Erro ao carregar pets da API:', erro);
+      setPets([]);
+    } finally {
+      setCarregando(false);
+    }
+  };
 
-    return matchesSearch && matchesSpecies && matchesSize;
+  // Filtragem dinâmica dos dados reais
+  const petsFiltrados = pets.filter(pet => {
+    const combinaBusca = (pet.nome || '').toLowerCase().includes(busca.toLowerCase()) || 
+                          (pet.cidade || '').toLowerCase().includes(busca.toLowerCase());
+    const combinaEspecie = especie === 'Todos' || (pet.especie || '').toLowerCase() === especie.toLowerCase();
+    const combinaPorte = porte === 'Todos' || (pet.porte || '').toLowerCase() === porte.toLowerCase();
+
+    return combinaBusca && combinaEspecie && combinaPorte;
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800">
-      
-      {/* Banner Inicial */}
-      <section className="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 text-white py-12 px-4 shadow-lg">
-        <div className="max-w-6xl mx-auto text-center md:text-left">
-          <span className="bg-white/20 text-white text-xs font-semibold uppercase px-3 py-1 rounded-full">
-            🐾 Adotar é um ato de amor
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold mt-4 mb-2">
-            Encontre o seu novo melhor amigo
-          </h1>
-          <p className="text-purple-100 max-w-xl">
-            Conectando animais resgatados a novos lares.
-          </p>
-        </div>
-      </section>
-
-      {/* Estrutura de Filtros */}
-      <section id="feed" className="max-w-6xl mx-auto px-4 -mt-6 relative z-10">
-        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: 'sans-serif', padding: '32px 20px' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        
+        {/* Topo: Busca e Filtros */}
+        <section style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e5e7eb', marginBottom: '32px' }}>
           
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Pesquisar</label>
+          {/* Barra de Busca */}
+          <div style={{ position: 'relative', marginBottom: '20px' }}>
+            <Search size={20} color="#9ca3af" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
               type="text"
-              placeholder="Nome, raça ou cidade..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+              placeholder="Buscar por nome do pet ou cidade..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              style={{ width: '100%', padding: '12px 12px 12px 44px', borderRadius: '10px', border: '1px solid #d1d5db', fontSize: '15px', outline: 'none', boxSizing: 'border-box' }}
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Espécie</label>
-            <select
-              value={selectedSpecies}
-              onChange={(e) => setSelectedSpecies(e.target.value)}
-              className="w-full py-2.5 px-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm bg-white"
-            >
-              <option value="Todos">Todas as Espécies</option>
-              <option value="Cão">Cão</option>
-              <option value="Gato">Gato</option>
-            </select>
+          {/* Linha de Botões de Filtro */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            
+            {/* Filtro Espécie */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151', minWidth: '70px' }}>Espécie:</span>
+              {['Todos', 'Cão', 'Gato'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setEspecie(item)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    border: '1px solid',
+                    borderColor: especie === item ? '#ea580c' : '#d1d5db',
+                    backgroundColor: especie === item ? '#ea580c' : '#ffffff',
+                    color: especie === item ? '#ffffff' : '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* Filtro Porte */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151', minWidth: '70px' }}>Porte:</span>
+              {['Todos', 'Pequeno', 'Médio', 'Grande'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setPorte(item)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    border: '1px solid',
+                    borderColor: porte === item ? '#ea580c' : '#d1d5db',
+                    backgroundColor: porte === item ? '#ea580c' : '#ffffff',
+                    color: porte === item ? '#ffffff' : '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
           </div>
+        </section>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Porte</label>
-            <select
-              value={selectedSize}
-              onChange={(e) => setSelectedSize(e.target.value)}
-              className="w-full py-2.5 px-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm bg-white"
-            >
-              <option value="Todos">Todos os Portes</option>
-              <option value="Pequeno">Pequeno</option>
-              <option value="Médio">Médio</option>
-              <option value="Grande">Grande</option>
-            </select>
-          </div>
+        {/* Área do Feed de Pets */}
+        <main>
+          {carregando ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#6b7280' }}>
+              <RefreshCw size={32} style={{ animation: 'spin 1s linear infinite', marginBottom: '12px', color: '#ea580c' }} />
+              <p style={{ fontSize: '15px' }}>Carregando dados da API...</p>
+              <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+            </div>
+          ) : petsFiltrados.length === 0 ? (
+            /* Tela Vazia */
+            <div style={{ textAlign: 'center', padding: '80px 20px', backgroundColor: '#ffffff', borderRadius: '16px', border: '1px solid #e5e7eb' }}>
+              <PawPrint size={48} color="#d1d5db" style={{ marginBottom: '16px' }} />
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#374151', marginBottom: '8px' }}>
+                Nenhum pet cadastrado ou encontrado
+              </h3>
+              <p style={{ color: '#6b7280', fontSize: '14px', maxWidth: '400px', margin: '0 auto' }}>
+                Assim que houverem cadastros,  os bichinhos aparecerão aqui.
+              </p>
+            </div>
+          ) : (
+            /* Cards de Pets Reais */
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+              {petsFiltrados.map((pet) => (
+                <div key={pet.id} style={{ backgroundColor: '#ffffff', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' }}>
+                  
+                  {pet.imagemUrl && (
+                    <div style={{ height: '200px', width: '100%', backgroundColor: '#f3f4f6' }}>
+                      <img src={pet.imagemUrl} alt={pet.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  )}
 
-        </div>
-      </section>
+                  <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#111827' }}>{pet.nome}</h2>
+                        <span style={{ fontSize: '12px', backgroundColor: '#fff7ed', color: '#ea580c', padding: '4px 8px', borderRadius: '6px', fontWeight: '600' }}>
+                          {pet.especie}
+                        </span>
+                      </div>
 
-      {/* Feed de Animais Reais */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">Animais para Adoção</h2>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#6b7280', fontSize: '13px', marginBottom: '12px' }}>
+                        <MapPin size={14} color="#ea580c" />
+                        <span>{pet.cidade || 'Local não informado'}</span>
+                      </div>
 
-        {loading ? (
-          <p className="text-center text-slate-500 py-10">Carregando...</p>
-        ) : filteredPets.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <span className="text-4xl mb-2 block">🐾</span>
-            <h3 className="text-lg font-semibold text-slate-700">Nenhum animal cadastrado no momento</h3>
-            <p className="text-slate-500 text-sm mt-1">Os animais cadastrados no backend aparecerão aqui automaticamente.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPets.map((pet) => (
-              <div key={pet.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100">
-                <img src={pet.imageUrl || 'https://via.placeholder.com/400x300?text=Sem+Foto'} alt={pet.name} className="w-full h-48 object-cover" />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold text-slate-800">{pet.name}</h3>
-                  <p className="text-sm text-slate-500">{pet.breed} • {pet.location}</p>
+                      <p style={{ fontSize: '13px', color: '#4b5563', lineHeight: '1.5', marginBottom: '16px' }}>
+                        {pet.descricao}
+                      </p>
+                    </div>
+
+                    <Link
+                      to={`/pet/${pet.id}`}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        padding: '10px',
+                        backgroundColor: '#ea580c',
+                        color: '#ffffff',
+                        borderRadius: '10px',
+                        textDecoration: 'none',
+                        fontWeight: '600',
+                        fontSize: '14px',
+                        textAlign: 'center'
+                      }}
+                    >
+                      <Heart size={16} /> Ver Detalhes
+                    </Link>
+                  </div>
+
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+              ))}
+            </div>
+          )}
+        </main>
 
+      </div>
     </div>
   );
 }
